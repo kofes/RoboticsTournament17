@@ -34,20 +34,18 @@ void APDS_Loop(struct APDS* in) {
     Serial.println("Error reading light values");
 
   } else {
-    Serial.println("<color>");
-      Serial.print("\t<ambient>");
-        Serial.print(in->ambient_light);
-      Serial.println("</ambient>");
-      Serial.print("\t<red>");
-        Serial.print(in->red_light);
-      Serial.println("</red>");
-      Serial.print("\t<green>");
-        Serial.print(in->green_light);
-      Serial.println("</green>");
-      Serial.print("\t<blue>");
-        Serial.print(in->blue_light);
-      Serial.println("</blue>");
-    Serial.println("</color>");
+    Serial.print("<ambient>");
+      Serial.print(in->ambient_light);
+    Serial.println("</ambient>");
+    Serial.print("<red>");
+      Serial.print(in->red_light);
+    Serial.println("</red>");
+    Serial.print("<green>");
+      Serial.print(in->green_light);
+    Serial.println("</green>");
+    Serial.print("<blue>");
+      Serial.print(in->blue_light);
+    Serial.println("</blue>");
   }
 }
 
