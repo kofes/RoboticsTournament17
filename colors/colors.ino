@@ -20,6 +20,14 @@ typedef struct APDS {
 static struct APDS s_apds;
 static char state;
 
+static const float AMB_B_TO_G = 1.4f;
+static const float AMB_G_TO_W = 1.3f;
+static const float AMB_W_TO_Y = 1.2f;
+static const float AMB_Y_TO_G = 1.2f;
+static const float AMB_G_TO_B = 1.2f;
+static const float AMB_B_TO_W = 1.3f;
+static const float AMB_W_TO_R = 1.4f;
+
 byte colorMask = 0;
 
 bool isBlue(struct APDS* apds) {
@@ -49,35 +57,35 @@ void colorControl(struct APDS* apds) {
                    amb[(last+pv)%size_amb] +
                    amb[(last+v)%size_amb])/3;
     //From black to green
-    if (state == 'B' && isGreen(apds) && prev*1.4 <= amb[last]) {
+    if (state == 'B' && isGreen(apds) && prev*AMB_B_TO_G <= amb[last]) {
       state = 'G';
       isComplete = false;
       last = 0;
     //From green to white
-    } else if (state == 'G' && prev*1.3 <= amb[last]) {
+    } else if (state == 'G' && prev*AMB_G_TO_W <= amb[last]) {
       state = 'W';
       isComplete = false;
       last = 0;
     //From white to yellow
-    } else if (state == 'W' && isGreen(apds) && prev >= 1.2 * amb[last]) {
+    } else if (state == 'W' && isGreen(apds) && prev >= AMB_W_TO_Y * amb[last]) {
       state = 'Y';
       isComplete = false;
       last = 0;
     //From yellow to gray
-    } else if (state == 'Y' && prev >= amb[last] * 1.2) {
+    } else if (state == 'Y' && prev >= amb[last] * AMB_Y_TO_G) {
       state = 'g';
       isComplete = false;
       last = 0;
     //From gray to blue
-    } else if (state == 'g' && isBlue(apds) && prev >= amb[last]*1.2) {
+    } else if (state == 'g' && isBlue(apds) && prev >= amb[last]*AMB_G_TO_B) {
       state = 'b';
       isComplete = false;
       last = 0;
     //From blue to white
-    } else if (state == 'b' && prev*1.3 <= amb[last]) {
+    } else if (state == 'b' && prev*AMB_B_TO_W <= amb[last]) {
       state = 'W';
     //From white to red
-    } else if (state == 'W' && isRed(apds) && prev >= amb[last]*1.4) {
+    } else if (state == 'W' && isRed(apds) && prev >= amb[last]*AMB_W_TO_R) {
       state = 'R';
     }
   }
