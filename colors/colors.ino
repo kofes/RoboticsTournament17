@@ -100,43 +100,7 @@ void colorControl(struct APDS* apds) {
     case 'R' : Serial.println("Red"); break;
     default: Serial.println("Unknown color"); break;
   }
-//  if(isGreen() && !(GREEN&colorMask)) {
-//    colorState = 'G';
-//    colorMask |= GREEN;
-//    //MAX SPEED
-//    AMotor(HIGH, );
-//    BMotor(HIGH, );
-//  } else if(isGreen() && (GREEN&colorMask)) {
-//    colorState = 'Y';
-//    colorMask |= YELLOW;
-//    //MOVE SLOW
-//    AMotor(HIGH, );
-//    BMotor(HIGH, );
-//  } else if(isRed()  && (RED&colorMask)) {
-//    colorState = 'R';
-//    colorMask |= RED;
-//    //STOP
-//    AMotor(HIGH, 0);
-//    BMotor(HIGH, 0);
-//  } else if(isBlue() && MH_SSAnalogLoop(&SS_Left) < 500 && MH_SSAnalogLoop(&SS_Right) < 500   && (BLUE&colorMask)) {
-//    colorState = 'B';
-//    colorMask |= BLUE2;
-//  }
-//
-//  if(colorState == 'B' && MH_SSAnalogLoop(&SS_Left) < 500 && MH_SSAnalogLoop(&SS_Right) > 500) {
-//    //TRUT to right
-//  }
-//  if(colorState == 'B' && MH_SSAnalogLoop(&SS_Left) > 500 && MH_SSAnalogLoop(&SS_Right) < 500) {
-//    //TRUT to left
-//  }
-//  if(colorState == 'B' && MH_SSAnalogLoop(&SS_Left) < 500 && MH_SSAnalogLoop(&SS_Right) < 500) {
-//    //MOVE SLOW
-//    AMotor(HIGH, );
-//    BMotor(HIGH, );
-//  }
 }
-
-///
 void APDS_Setup(struct APDS* in) {
   attachInterrupt(0, interruptRoutine, FALLING);
   if ( apds.init() ) {
