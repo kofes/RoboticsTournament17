@@ -16,7 +16,8 @@ void FS1_000A_Setup(struct FS1_000A* in) {
 }
 
 void FS1_000A_SendMsg_Loop(const char *msg) {
-  vw_send((uint8_t *)msg, strlen(msg));
+  uint8_t answer = 0xFE;
+  vw_send((uint8_t *)(&answer), strlen(msg));
   vw_wait_tx();
 }
 
@@ -25,7 +26,6 @@ void setup() {
   Serial.begin(9600);
   
   strSend.Transmit = 8;
-  strGet.Resiver = 10; 
   FS1_000A_Setup(&strSend);
   
   pinMode(led_pin, OUTPUT); 
