@@ -212,7 +212,7 @@ void colorControl(struct APDS* apds) {
                    amb[(last+pv)%size_amb] +
                    amb[(last+v)%size_amb])/3;
     //From black to green
-    if (state == 'B' && isGreen(apds) && prev*1.4 <= amb[last]) {
+    if (state == 'B' && isGreen(apds) && prev*1.2 <= amb[last]) {
       state = 'G';
       isComplete = false;
       last = 0;
@@ -261,17 +261,29 @@ void colorControl(struct APDS* apds) {
     //colorState = 'G';
     //colorMask |= GREEN;
     //MAX SPEED
-    AMototr(HIGH, MAKSIMUM_MOTOR_SPEED*MOTOR_LEFT_COEF);
-    BMototr(HIGH, MAKSIMUM_MOTOR_SPEED*MOTOR_RIGHT_COEF);
-    delay(2000);
-    AMototr(HIGH, MINIMUM_MOTOR_SPEED*MOTOR_LEFT_COEF);
-    BMototr(HIGH, MINIMUM_MOTOR_SPEED*MOTOR_RIGHT_COEF);
+    if (isComplete) {
+      AMototr(HIGH, MAKSIMUM_MOTOR_SPEED*MOTOR_LEFT_COEF);
+      BMototr(HIGH, MAKSIMUM_MOTOR_SPEED*MOTOR_RIGHT_COEF);
+      delay(2000);
+      AMototr(HIGH, MINIMUM_MOTOR_SPEED*MOTOR_LEFT_COEF);
+      BMototr(HIGH, MINIMUM_MOTOR_SPEED*MOTOR_RIGHT_COEF);
+    } else {
+      //STOP
+      AMototr(HIGH, 0);
+      BMototr(HIGH, 0);
+    }
   } else if(state == 'Y') {
     //colorState = 'Y';
     //colorMask |= YELLOW;
     //MOVE SLOW
-    AMototr(HIGH, MINIMUM_MOTOR_SPEED*MOTOR_LEFT_COEF);
-    BMototr(HIGH, MINIMUM_MOTOR_SPEED*MOTOR_RIGHT_COEF);
+    if (isComplete) {
+      AMototr(HIGH, MINIMUM_MOTOR_SPEED*MOTOR_LEFT_COEF);
+      BMototr(HIGH, MINIMUM_MOTOR_SPEED*MOTOR_RIGHT_COEF);
+    } else {
+      //STOP
+      AMototr(HIGH, 0);
+      BMototr(HIGH, 0);
+    }
   } else if(state == 'R') {
     //colorState = 'R';
     //colorMask |= RED;
