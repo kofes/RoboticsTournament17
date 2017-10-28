@@ -1,4 +1,5 @@
 #include <Wire.h>
+#include <VirtualWire.h>
 #include "SparkFun_APDS9960.h"
 
 #define PWMA 3
@@ -24,7 +25,7 @@
 #define IK_SENSOR    500
 
 float MOTOR_LEFT_COEF  = (float)255/255;
-float MOTOR_RIGHT_COEF = (float)235/255;
+float MOTOR_RIGHT_COEF = (float)225/255;
 
 int AmotorSpeed; //  скорость мотора
 int BmotorSpeed; //  скорость мотора
@@ -49,6 +50,12 @@ typedef struct APDS {
   uint16_t green_light = 0;
   uint16_t blue_light = 0;
 } APDS;
+
+typedef struct RF_5V {//приёмник
+  char Resiver;
+  byte message[VW_MAX_MESSAGE_LEN];
+  byte messageLength = VW_MAX_MESSAGE_LEN; 
+} RF_5V;
 
 //<------------------------------------------------
 typedef struct MH_SS {
@@ -256,6 +263,9 @@ void colorControl(struct APDS* apds) {
     //MAX SPEED
     AMototr(HIGH, MAKSIMUM_MOTOR_SPEED*MOTOR_LEFT_COEF);
     BMototr(HIGH, MAKSIMUM_MOTOR_SPEED*MOTOR_RIGHT_COEF);
+    delay(2000);
+    AMototr(HIGH, MINIMUM_MOTOR_SPEED*MOTOR_LEFT_COEF);
+    BMototr(HIGH, MINIMUM_MOTOR_SPEED*MOTOR_RIGHT_COEF);
   } else if(state == 'Y') {
     //colorState = 'Y';
     //colorMask |= YELLOW;
@@ -313,6 +323,30 @@ void interruptRoutine() {
   isr_flag = 1;
 }
 
+
+static struct RF_5V strGet;
+
+void RF_5V_Setup(struct RF_5V* in) {
+  vw_set_rx_pin(in->Resiver);
+  vw_setup(2000);
+  vw_rx_start();
+}
+
+void RF_5V_GetMsg_Loop(struct RF_5V* in) {
+  if (vw_get_message(in->message, &(in->messageLength))) { 
+    if(in->messageLength == 1 && in->message[0] == 0xFE) {
+      AMototr(HIGH, 0);
+      BMototr(HIGH, 0);
+    }
+    
+    //Serial.println("!!!!\n"); 
+    //digitalWrite(led_pin, HIGH);
+    //for (int i = 0; i < in->messageLength; i++) { 
+    //  Serial.write(in->message[i]);
+    //} 
+    //digitalWrite(led_pin, LOW);
+  } 
+}
 ////////END COLORS
 
 void setup(){
@@ -340,6 +374,10 @@ void setup(){
     state = 'B';//First color - black
     s_apds.Pin = 2;
     APDS_Setup(&s_apds);
+
+    //for radio
+    //strGet.Resiver = 11; 
+    //RF_5V_Setup(&strGet);
 }
 
 void treadControlLine(int n){
@@ -359,6 +397,8 @@ void loop(){
         Serial.println("Error reading light values");
     else
         colorControl(&s_apds);
+    //for radio
+    //RF_5V_GetMsg_Loop(&strGet);
   /*
      //BMototr(LOW, motorSpeedGlobal);
      AMototr(LOW, motorSpeedGlobal);
